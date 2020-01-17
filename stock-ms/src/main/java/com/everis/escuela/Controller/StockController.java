@@ -27,7 +27,7 @@ public class StockController {
 	@GetMapping("/stock/acumulado/producto/{idProducto}")
 	public CantidadDTO /*String*/ obtenerCantidadProductosTodasTiendas(@PathVariable("idProducto") Long idProducto) throws ResourceNotFoundException{
 		CantidadDTO cantidad = new CantidadDTO();
-		cantidad.setCantidad(12);//stockService.obtenerCantidadProductoTodasTiendas(idProducto));
+		cantidad.setCantidad(stockService.obtenerCantidadProductoTodasTiendas(idProducto));
 		//return "La cantidad de productos acumulados en todas las tiendas es : " + cantidad;		
 		return  cantidad;
 	}
