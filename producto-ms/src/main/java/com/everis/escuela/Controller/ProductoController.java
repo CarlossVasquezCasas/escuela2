@@ -77,7 +77,7 @@ public class ProductoController {
 		
 		ProductoDTO producto = mapper.map(productoService.obtenerProductoPorId(id),ProductoDTO.class) ;
 		
-		producto.setCantidad(getCantidad("stock-ms", id).getCantidad());
+		producto.setCantidad(getCantidad("almacen-ms", id).getCantidad());
 		return producto;
 		
 	}

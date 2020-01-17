@@ -1,6 +1,6 @@
 spring: 
   application: 
-    name: almacen-ms
+    name: orden-ms
   cloud: 
     config: 
       uri: http://localhost:8081
