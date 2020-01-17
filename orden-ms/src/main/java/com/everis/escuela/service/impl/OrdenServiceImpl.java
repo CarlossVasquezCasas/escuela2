@@ -1,10 +1,13 @@
 package com.everis.escuela.service.impl;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.everis.escuela.entidad.Orden;
+import com.everis.escuela.dto.DetalleOrdenReducidoDTO;
 import com.everis.escuela.entidad.DetalleOrden;
 import com.everis.escuela.exceptions.ResourceNotFoundException;
 import com.everis.escuela.repository.OrdenRepository;
@@ -36,7 +39,15 @@ public class OrdenServiceImpl implements OrdenService {
 	@Override
 	public Orden guardarOrden(Orden orden) throws ResourceNotFoundException {
 		// TODO Auto-generated method stub
-		return ordenRepository.save(orden);
+		Orden response = ordenRepository.save(orden);
+		List<DetalleOrden> lista = response.getDetalle();
+		
+		for (DetalleOrden obj : lista) {
+			obj.setOrden(response);			
+			detalleOrdenRepository.save(obj);
+		} 
+		
+		return orden;
 	}
 
 //	@Override

@@ -88,15 +88,19 @@ public class OrdenController {
 		List<DetalleOrden> detalleOrdenes= new ArrayList<DetalleOrden>();
 		DetalleOrden detalleOrden; 
 		for (DetalleOrdenReducidoDTO obj : ordenReducidoDto.getDetalle()) {
-			
-			if( getProducto("producto-ms",obj.getIdProducto()) ==null )
-			{
-				throw new ValidationException("No se pudo obtener informacion  del producto");
+			try {
+				cantidadStock  = getCantidad("almacen-ms",obj.getIdProducto() ).getCantidad();
+			} catch (Exception e) {
+				throw new ValidationException("Error: no se pudo obtener informacion del stock ");
+			}
 				
+			try {
+					precioProducto = getProducto("producto-ms",obj.getIdProducto() ).getPrecio();
+			} catch (Exception e) {
+				throw new ValidationException("Error: no se pudo obtener informacion del stock ");
 			}
 			
-			cantidadStock  = getCantidad("almacen-ms",obj.getIdProducto() ).getCantidad();
-			precioProducto = getProducto("producto-ms",obj.getIdProducto() ).getPrecio();
+			
 			
 			
 			if( cantidadStock < obj.getCantidad())

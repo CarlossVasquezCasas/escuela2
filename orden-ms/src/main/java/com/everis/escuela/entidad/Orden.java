@@ -13,6 +13,8 @@ import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -37,7 +39,8 @@ public class Orden {
 	@Column
 	private BigDecimal total;
 	
-	@OneToMany(cascade = CascadeType.ALL)
+	@OneToMany(mappedBy = "orden",cascade = CascadeType.ALL)
+	@JsonManagedReference("orden")
 	private List<DetalleOrden> detalle;
 	 
 

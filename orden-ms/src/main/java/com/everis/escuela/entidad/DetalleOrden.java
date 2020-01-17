@@ -7,7 +7,13 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
 import javax.persistence.OneToOne;
+
+import org.hibernate.annotations.Fetch;
+import org.hibernate.annotations.FetchMode;
+
+import com.fasterxml.jackson.annotation.JsonBackReference;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -25,7 +31,10 @@ public class DetalleOrden {
 	private long id;
 
 
-	@OneToOne
+	@OneToOne (targetEntity = Orden.class)
+	@JoinColumn(name = "orden_id") 
+	@JsonBackReference("orden")
+	@Fetch(FetchMode.JOIN)
 	private Orden orden;
 	
 	@Column
