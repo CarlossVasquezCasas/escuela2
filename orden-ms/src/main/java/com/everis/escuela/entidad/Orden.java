@@ -40,7 +40,7 @@ public class Orden {
 	private BigDecimal total;
 	
 	@OneToMany(mappedBy = "orden",cascade = CascadeType.ALL)
-	@JsonManagedReference("orden")
+//	@JsonManagedReference("orden")
 	private List<DetalleOrden> detalle;
 	 
 

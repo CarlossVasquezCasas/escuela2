@@ -40,12 +40,12 @@ public class OrdenServiceImpl implements OrdenService {
 	public Orden guardarOrden(Orden orden) throws ResourceNotFoundException {
 		// TODO Auto-generated method stub
 		Orden response = ordenRepository.save(orden);
-		List<DetalleOrden> lista = response.getDetalle();
-		
-		for (DetalleOrden obj : lista) {
-			obj.setOrden(response);			
-			detalleOrdenRepository.save(obj);
-		} 
+//		List<DetalleOrden> lista = response.getDetalle();
+//		
+//		for (DetalleOrden obj : lista) {
+//			obj.setOrden(response);			
+//			detalleOrdenRepository.save(obj);
+//		} 
 		
 		return orden;
 	}

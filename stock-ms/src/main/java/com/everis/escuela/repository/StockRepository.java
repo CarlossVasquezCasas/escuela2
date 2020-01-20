@@ -16,10 +16,17 @@ public interface StockRepository extends CustomRepository <Stock, Long> {
  
 	List<Stock>  findByIdProductoAndIdTienda(Long idProducto,Long idTienda);
 	
+	List<Stock>  findByIdProducto(Long idProducto);
 	
 	//@Query(value = "SELECT coalesce(SUM(s.Cantidad),0) FROM STOCK s WHERE id_Producto = ?1 AND id_Tienda= ?2 and estado.codigo='A' ")		    
     
 	 @Query(value = "SELECT coalesce(SUM(s.Cantidad),0) FROM STOCK s WHERE id_Producto = ?1 AND id_Tienda= ?2 ",			    
 			    nativeQuery = true)	
 	 Optional<Integer> findProductosPorTienda(Long idProducto,Long idTienda);
+	 
+	 @Query(value = "SELECT coalesce(SUM(s.Cantidad),0) FROM STOCK s WHERE id_Producto = ?1  ",			    
+			    nativeQuery = true)	
+	 Integer findCantidadProductos(Long idProducto);
+	
+	
 }
