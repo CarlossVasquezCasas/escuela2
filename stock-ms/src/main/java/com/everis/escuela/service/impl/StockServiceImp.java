@@ -93,19 +93,19 @@ public class StockServiceImp implements StockService {
 		
 		for (StockProductoDTO objdetalleorden : lststockproducto) {
 			numstock=0;
-			
 			numstock = stockRepository.findCantidadProductos(objdetalleorden.getIdproducto());
 			if (numstock < objdetalleorden.getCantidad())
 			{
 				throw new ValidationException("No se cuenta con stock del producto" + objdetalleorden.getIdproducto());
 			}
+		}
+		
+		for (StockProductoDTO objdetalleorden : lststockproducto) {
 			
-			List<Stock> listastock = StreamSupport.stream(stockRepository.findByIdProducto(objdetalleorden.getIdproducto()).spliterator(), false).collect(Collectors.toList());
+			
+			List<Stock> listastock = StreamSupport.stream(stockRepository.findByIdProductoOrderByCantidadDesc(objdetalleorden.getIdproducto()).spliterator(), false).collect(Collectors.toList());
 			valrestar = objdetalleorden.getCantidad() ;
 			for (Stock stock : listastock) {
-				
-				
-				
 				
 				resultado = stock.getCantidad() - valrestar ;
 				
@@ -120,10 +120,12 @@ public class StockServiceImp implements StockService {
 					valrestar = 0;
 				}
 				
-				stockRepository.save(stock);
+				
+				
+				if (resultado == 0 ) break; 						
 				
 			}
-			
+			stockRepository.saveAll(listastock);
 		
 		}
 		
