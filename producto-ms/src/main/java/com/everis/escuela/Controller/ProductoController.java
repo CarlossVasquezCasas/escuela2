@@ -28,7 +28,9 @@ import com.everis.escuela.entidad.Producto;
 import com.everis.escuela.entidad.TipoProducto;
 import com.everis.escuela.exceptions.ResourceNotFoundException;
 import com.everis.escuela.exceptions.ValidationException;
+import com.everis.escuela.feign.AlmacenClient;
 import com.everis.escuela.service.ProductoService;
+import com.everis.escuela.service.impl.FeignServiceImp;
 
 
 @RefreshScope
@@ -46,6 +48,10 @@ public class ProductoController {
 	@Autowired
 	private ProductoService  productoService;
 
+
+	
+	@Autowired
+	private FeignServiceImp feignServiceImp;
 	
 	
 	public CantidadDTO getCantidad(String service,Long idProducto)	{
@@ -77,7 +83,12 @@ public class ProductoController {
 		
 		ProductoDTO producto = mapper.map(productoService.obtenerProductoPorId(id),ProductoDTO.class) ;
 		
-		producto.setCantidad(getCantidad("almacen-ms", id).getCantidad());
+//		producto.setCantidad(getCantidad("almacen-ms", id).getCantidad());
+ //		producto.setCantidad(almacenClient.obtenerCantidadProductosTodasTiendas(id).getCantidad());
+		
+		producto.setCantidad(feignServiceImp.obtenerCantidadStockProducto(id).getCantidad());
+		
+		
 		return producto;
 		
 	}

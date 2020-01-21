@@ -5,6 +5,7 @@ import java.net.URI;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Optional;
 
 import javax.validation.Valid;
 
@@ -31,6 +32,8 @@ import com.everis.escuela.exceptions.ValidationException;
 import com.everis.escuela.feign.AlmacenClient;
 import com.everis.escuela.feign.ProductoClient;
 import com.everis.escuela.service.OrdenService;
+import com.everis.escuela.service.impl.FeignServiceImp;
+import com.netflix.hystrix.contrib.javanica.annotation.HystrixCommand;
 
 
 @RefreshScope
@@ -50,6 +53,8 @@ public class OrdenController {
 	@Autowired
 	private AlmacenClient almacenClient;
 	
+	@Autowired
+	private FeignServiceImp feignServiceImp;
 	
 	public CantidadDTO getCantidad(String service,Long idProducto)	{
 		List<ServiceInstance> list = client.getInstances(service);
@@ -81,9 +86,9 @@ public class OrdenController {
 	
 	
 	
-	
+	@HystrixCommand(fallbackMethod = "guardarSinStock")
 	@PostMapping("/orden")
-	public OrdenDTO guardarOrden(@Valid @RequestBody OrdenReducidoDTO ordenReducidoDto)  throws  Exception{
+	public OrdenDTO guardarOrden(@Valid @RequestBody OrdenReducidoDTO ordenReducidoDto  )  throws  Exception{
 		ModelMapper mapper = new ModelMapper();
 		mapper.getConfiguration().setMatchingStrategy(MatchingStrategies.STRICT); // para obligar a que mapee q cada campo debe ser igual nombre y tipo
 		Orden orden = mapper.map( ordenReducidoDto , Orden.class);
@@ -107,14 +112,10 @@ public class OrdenController {
 		
 		List<StockProductoDTO>  lststockproducto = new ArrayList<StockProductoDTO>();
 		
+		
+		
 		for (DetalleOrdenReducidoDTO obj : ordenReducidoDto.getDetalle()) {
-			try {
-				//cantidadStock  =  getCantidad("almacen-ms",obj.getIdProducto() ).getCantidad();
-				cantidadStock  = almacenClient.obtenerCantidadProductosTodasTiendas(obj.getIdProducto()).getCantidad(); //
-			} catch (Exception e) {
-				throw new ValidationException("Error: no se pudo obtener informacion del stock ");
-			}
-				
+	
 			try {
 					
 				//precioProducto = getProducto("producto-ms",obj.getIdProducto() ).getPrecio();
@@ -123,13 +124,21 @@ public class OrdenController {
 				throw new ValidationException("Error: no se pudo obtener informacion del stock ");
 			}
 			
-			
+			try {
+				//cantidadStock  =  getCantidad("almacen-ms",obj.getIdProducto() ).getCantidad();
+//				cantidadStock  = almacenClient.obtenerCantidadProductosTodasTiendas(obj.getIdProducto()).getCantidad(); //
+				cantidadStock  = feignServiceImp.obtenerCantidadProductosTodasTiendas(obj.getIdProducto()).getCantidad(); //
+				
+				
+			} catch (Exception e) {
+				throw new ValidationException("Error: no se pudo obtener informacion del stock ");
+			}
+				
 			
 			
 			if( cantidadStock < obj.getCantidad()) 
-			{
-				throw new ValidationException("No hay stock para la cantidad solicitada del producto " + obj.getIdProducto());
-				
+			{	
+				throw new ValidationException("No hay stock para la cantidad solicitada del producto " + obj.getIdProducto());				
 			}
 			detalleOrden = new DetalleOrden();
 			detalleOrden.setIdProducto(obj.getIdProducto());
@@ -158,8 +167,7 @@ public class OrdenController {
 		
 		OrdenDTO ordenDTO = new OrdenDTO();
 		ordenDTO = mapper.map(ordenService.guardarOrden(orden), OrdenDTO.class);
-		
-		almacenClient.actualizarStockProducto(lststockproducto);
+		 almacenClient.actualizarStockProducto(lststockproducto);
 		
 		return ordenDTO;
 		
@@ -174,6 +182,59 @@ public class OrdenController {
 		
 		
 	}
+	
+	public OrdenDTO guardarSinStock(@Valid @RequestBody OrdenReducidoDTO ordenReducidoDto  )  throws  Exception{
+		ModelMapper mapper = new ModelMapper();
+		mapper.getConfiguration().setMatchingStrategy(MatchingStrategies.STRICT); // para obligar a que mapee q cada campo debe ser igual nombre y tipo
+		Orden orden = mapper.map( ordenReducidoDto , Orden.class);
+		
+		BigDecimal precioProducto =  BigDecimal.ZERO;
+		
+		BigDecimal totalOrden = new BigDecimal(0);
+		
+		List<DetalleOrden> detalleOrdenes= new ArrayList<DetalleOrden>();
+		DetalleOrden detalleOrden; 
+		
+		for (DetalleOrdenReducidoDTO obj : ordenReducidoDto.getDetalle()) {
+		
+			try {
+					
+				//precioProducto = getProducto("producto-ms",obj.getIdProducto() ).getPrecio();
+				precioProducto = productoClient.obtenerProductoPorId(obj.getIdProducto()).getPrecio() ;
+			} catch (Exception e) {
+				throw new ValidationException("Error: no se pudo obtener informacion del stock ");
+			}
+			
+			detalleOrden = new DetalleOrden();
+			detalleOrden.setIdProducto(obj.getIdProducto());
+			detalleOrden.setCantidad(obj.getCantidad());
+			detalleOrdenes.add(detalleOrden);	
+			
+			
+			totalOrden = totalOrden.add(precioProducto.multiply(new BigDecimal(obj.getCantidad())));
+			//detalleOrden.setOrden(orden);
+			
+		}
+
+		
+		
+		
+		orden.setDetalle(detalleOrdenes);	
+		
+		orden.setFecha(new Date());
+		
+		orden.setTotal(totalOrden);
+		
+		OrdenDTO ordenDTO = new OrdenDTO();
+		ordenDTO = mapper.map(ordenService.guardarOrden(orden), OrdenDTO.class);
+		
+		
+		
+		return ordenDTO;
+	}
+	
+	
+
 	
 	
 	
