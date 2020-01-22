@@ -5,7 +5,6 @@ import java.net.URI;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import java.util.Optional;
 
 import javax.validation.Valid;
 
@@ -15,8 +14,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cloud.client.ServiceInstance;
 import org.springframework.cloud.client.discovery.DiscoveryClient;
 import org.springframework.cloud.context.config.annotation.RefreshScope;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.client.RestTemplate;
 
@@ -28,12 +29,17 @@ import com.everis.escuela.dto.ProductoDTO;
 import com.everis.escuela.dto.StockProductoDTO;
 import com.everis.escuela.entidad.DetalleOrden;
 import com.everis.escuela.entidad.Orden;
+import com.everis.escuela.exceptions.ResourceNotFoundException;
 import com.everis.escuela.exceptions.ValidationException;
 import com.everis.escuela.feign.AlmacenClient;
 import com.everis.escuela.feign.ProductoClient;
 import com.everis.escuela.service.OrdenService;
 import com.everis.escuela.service.impl.FeignServiceImp;
 import com.netflix.hystrix.contrib.javanica.annotation.HystrixCommand;
+
+import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiResponse;
+import io.swagger.annotations.ApiResponses;
 
 
 @RefreshScope
@@ -70,6 +76,7 @@ public class OrdenController {
 		return null;
 	}
 	
+	
 	public ProductoDTO getProducto(String service,Long idProducto)	{
 		List<ServiceInstance> list = client.getInstances(service);
 		if( list != null && list.size() > 0)
@@ -85,8 +92,16 @@ public class OrdenController {
 	}
 	
 	
-	
-	@HystrixCommand(fallbackMethod = "guardarSinStock")
+	@ApiOperation(value="guardar una orden de venta"
+				  ,notes="al guardar una orden se verificara el stock y los almacenes de cada producto"
+				  ,response = OrdenDTO.class)
+	@ApiResponses(value = {
+			@ApiResponse(code = 201, message = "Se registro correctamente la orden",response = OrdenDTO.class),
+			@ApiResponse(code = 404, message = "Recurso no Encontrado",response = ResourceNotFoundException.class),
+			@ApiResponse(code = 200, message = "Validacion del negocio",response = ValidationException.class)
+	})
+	@ResponseStatus(HttpStatus.CREATED) // para cuando registre correctamente muestre un codigo 201 y no 200
+	@HystrixCommand(fallbackMethod = "guardarSinStock")	
 	@PostMapping("/orden")
 	public OrdenDTO guardarOrden(@Valid @RequestBody OrdenReducidoDTO ordenReducidoDto  )  throws  Exception{
 		ModelMapper mapper = new ModelMapper();

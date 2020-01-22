@@ -13,6 +13,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cloud.client.ServiceInstance;
 import org.springframework.cloud.client.discovery.DiscoveryClient;
 import org.springframework.cloud.context.config.annotation.RefreshScope;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -28,7 +29,6 @@ import com.everis.escuela.entidad.Producto;
 import com.everis.escuela.entidad.TipoProducto;
 import com.everis.escuela.exceptions.ResourceNotFoundException;
 import com.everis.escuela.exceptions.ValidationException;
-import com.everis.escuela.feign.AlmacenClient;
 import com.everis.escuela.service.ProductoService;
 import com.everis.escuela.service.impl.FeignServiceImp;
 

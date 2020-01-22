@@ -24,7 +24,7 @@ public class CompaniaController {
 	@Autowired
 	private CompaniaService companiaService;
 
-	@GetMapping("/companias")
+	@GetMapping("/compania")
 	public List<CompaniaDTO> obtenerCompanias() {
 		ModelMapper modelMapper = new ModelMapper();
 		return StreamSupport.stream(companiaService.obtenerCompanias().spliterator(), false)

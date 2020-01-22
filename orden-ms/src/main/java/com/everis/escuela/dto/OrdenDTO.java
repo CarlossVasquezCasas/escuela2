@@ -13,6 +13,7 @@ import javax.persistence.OneToMany;
 
 import com.everis.escuela.entidad.DetalleOrden;
 
+import io.swagger.annotations.ApiModelProperty;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -22,7 +23,7 @@ import lombok.Setter;
 @NoArgsConstructor
 public class OrdenDTO {
 	
-	
+	@ApiModelProperty
 	private Long idCliente;
 	private Date fechaEnvio;	
 	private BigDecimal total; //se calcula sumatoria de la cantidad * precio de cada detalle

@@ -2,13 +2,12 @@ package com.everis.escuela;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.cloud.netflix.zuul.EnableZuulProxy;
-@EnableZuulProxy
+
 @SpringBootApplication
-public class EscuelaGatewayApplication {
+public class ClienteWebApplication {
 
 	public static void main(String[] args) {
-		SpringApplication.run(EscuelaGatewayApplication.class, args);
+		SpringApplication.run(ClienteWebApplication.class, args);
 	}
 
 }
