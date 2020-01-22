@@ -9,6 +9,6 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 public class EmpresaDTO {
-	@ApiModelProperty
+	
 	private String nombre;
 }

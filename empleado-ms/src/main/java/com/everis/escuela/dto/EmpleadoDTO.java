@@ -15,7 +15,7 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 public class EmpleadoDTO {
-	@ApiModelProperty
+	
 	private long id;
 	private String nombre;
 	
