@@ -25,8 +25,8 @@ public class Swagger2Config {
 	}
 	
 	private ApiInfo apiEndPointsInfo() {
-		return new ApiInfoBuilder().title("Ordenes microservicio")
-				.description("ORDEN MS REST API")
+		return new ApiInfoBuilder().title("Empleado microservicio")
+				.description("EMPLEADO MS REST API")
 				.contact(new Contact("Carloss Hammerlyb Vasquez Casas","chvc", "chvc@everis.com"))
 				.license("Apache 2.0")
 				.licenseUrl("https://www.apache.org/licenses/LICENSE-2.0.html")
