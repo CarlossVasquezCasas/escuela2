@@ -1,5 +1,5 @@
 server:
-  port: 9090
+  port: 9901 #9090
 zuul:
   ignored-headers: Access-Control-Allow-Credentials, Access-Control-Allow-Origin  routes:    producto:
       path: /producto/**
@@ -12,5 +12,11 @@ zuul:
       service-id: almacen-ms
     orden:
       path: /orden/**
-      service-id: orden-ms      
+      service-id: orden-ms
+    empleado:
+      path: /empleado/**
+      service-id: empleado-ms
+    empresa:
+      path: /empresa/**
+      service-id: empresa-ms       
     
