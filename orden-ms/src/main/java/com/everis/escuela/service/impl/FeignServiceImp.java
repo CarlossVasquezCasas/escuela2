@@ -18,11 +18,13 @@ public class FeignServiceImp implements FeignService {
 		
 	
 
-	@HystrixCommand(fallbackMethod = "obtenerCantidadDefecto",groupKey = "obtenerCantidadStockProducto",threadPoolKey = "obtenerCantidadStockProducto",commandProperties = {
-			@HystrixProperty(name = "circuitBreaker.requestVolumeThreshold",value = "5"),//nro de intentos para cambiar el estado a open
-			@HystrixProperty(name = "execution.isolation.thread.timeoutInMilliseconds",value = "500") // numero de espera de la peticion para generar timeout
+	@HystrixCommand(fallbackMethod = "obtenerCantidadDefecto",groupKey = "obtenerCantidadStockProducto",threadPoolKey = "obtenerCantidadStockProducto"
+			,commandProperties = {
+			@HystrixProperty(name = "circuitBreaker.requestVolumeThreshold",value = "20"),//nro de intentos para cambiar el estado a open
+			@HystrixProperty(name = "execution.isolation.thread.timeoutInMilliseconds",value = "10000") // numero de espera de la peticion para generar timeout
 			
-	})
+			}
+	)
 	@Override
 	public CantidadDTO obtenerCantidadProductosTodasTiendas(Long id) throws ResourceNotFoundException {
 		// TODO Auto-generated method stub
