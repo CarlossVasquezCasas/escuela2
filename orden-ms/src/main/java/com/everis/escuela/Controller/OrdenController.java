@@ -2,9 +2,12 @@ package com.everis.escuela.Controller;
 
 import java.math.BigDecimal;
 import java.net.URI;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.StreamSupport;
 
 import javax.validation.Valid;
 
@@ -15,6 +18,9 @@ import org.springframework.cloud.client.ServiceInstance;
 import org.springframework.cloud.client.discovery.DiscoveryClient;
 import org.springframework.cloud.context.config.annotation.RefreshScope;
 import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
@@ -44,6 +50,7 @@ import io.swagger.annotations.ApiResponses;
 
 @RefreshScope
 @RestController
+@CrossOrigin(origins = "*", allowedHeaders = "*")
 public class OrdenController {
 	
 	
@@ -104,6 +111,7 @@ public class OrdenController {
 	@HystrixCommand(fallbackMethod = "guardarSinStock")	
 	@PostMapping("/orden")
 	public OrdenDTO guardarOrden(@Valid @RequestBody OrdenReducidoDTO ordenReducidoDto  )  throws  Exception{
+		
 		ModelMapper mapper = new ModelMapper();
 		mapper.getConfiguration().setMatchingStrategy(MatchingStrategies.STRICT); // para obligar a que mapee q cada campo debe ser igual nombre y tipo
 		Orden orden = mapper.map( ordenReducidoDto , Orden.class);
@@ -246,6 +254,18 @@ public class OrdenController {
 		
 		
 		return ordenDTO;
+	}
+	
+	
+	@GetMapping("/orden/listado/{fechaEnvio}")
+	public List<OrdenDTO> listarOrdenes(@PathVariable("fechaEnvio") String fechaEnvio  )  throws  Exception{
+		
+		Date date1=new SimpleDateFormat("yyyy-MM-dd").parse(fechaEnvio);  
+		ModelMapper mapper = new ModelMapper();
+
+		return StreamSupport.stream(ordenService.listarOrdenes(date1).spliterator(), false).map(p ->mapper.map(p, OrdenDTO.class) )
+					.collect(Collectors.toList());
+		
 	}
 	
 	

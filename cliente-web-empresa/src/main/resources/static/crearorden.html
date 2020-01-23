@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Insert title here</title>
+</head>
+<body>
+	<form action="#" th:action="@{/agregarorden}" th:object="${orden}" method="post">
+	    <fieldset>
+	    <label for="idCliente">ID del Cliente</label>
+	    <input type="text" th:field="*{idCliente}" id="idCliente" placeholder="ID del Cliente">
+	    <span th:if="${#fields.hasErrors('idCliente')}" th:errors="*{idCliente}"></span>
+	    <label for="fechaEnvio">Fecha de Envio</label>
+	    <input type="text" th:field="*{fechaEnvio}" id="fechaEnvio" placeholder="Fecha de Envio">
+	    <span th:if="${#fields.hasErrors('fechaEnvio')}" th:errors="*{fechaEnvio}"></span>
+	        
+        <table>
+            <thead>
+                <tr>
+                    <th> id Producto</th>
+                    <th> Cantidad</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr th:each="detalleorden, itemStat : *{detalle}">
+                    <td><input th:field="*{detalle[__${itemStat.index}__].idProducto}" /></td>
+                    <td><input th:field="*{detalle[__${itemStat.index}__].cantidad}" /></td>
+                </tr>
+            </tbody>
+        </table>
+	    
+	    <label for="detalle">Fecha de Envio</label>
+	    <input type="text" th:field="*{fechaEnvio}" id="fechaEnvio" placeholder="Fecha de Envio">
+	    <span th:if="${#fields.hasErrors('fechaEnvio')}" th:errors="*{fechaEnvio}"></span>
+	   
+	    <input type="submit" id="submitButton" th:value="guardar">
+	    <input type="reset" id="resetButton" name="reset" th:value="restablecer"/> 
+	    
+	     </fieldset> 
+	</form>
+</body>
+</html>

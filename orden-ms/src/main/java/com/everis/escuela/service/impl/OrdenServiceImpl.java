@@ -1,5 +1,6 @@
 package com.everis.escuela.service.impl;
 
+import java.util.Date;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -48,6 +49,13 @@ public class OrdenServiceImpl implements OrdenService {
 //		} 
 		
 		return orden;
+	}
+
+	@Override
+	public List<Orden> listarOrdenes(Date fecha) throws ResourceNotFoundException {
+		
+		
+		return ordenRepository.findByOrdenesPorFechaEnvio(fecha);
 	}
 
 //	@Override

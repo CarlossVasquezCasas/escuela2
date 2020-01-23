@@ -7,6 +7,4 @@ spring:
             search-paths:
              Configuracion
 server: 
-  port: 8800  
-#server: 
-#  port: 8081  
+  port: 8081  

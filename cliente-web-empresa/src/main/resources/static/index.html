@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8"/>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+    <title>Welcome</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css" th:href="@{/css/bootstrap.min.css}" />
+	<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.0/jquery.min.js" th:src="@{/js/jquery-1.11.0.min.js}" ></script>
+    <meta name="description" content=""/>
+    <meta name="viewport" content="width=device-width"/>
+<!--     <base href="/"/> -->
+</head>
+<body>
+	<div class="container">
+    	<div class="starter-template">
+    		<form id="formulario" name="formOrden" method="post" >
+				<label for="idCliente">ID del Cliente*:</label>
+				<input name="idCliente" id="idCliente" placeholder="Introduce id del cliente" class="required" /><br />
+			        
+				<label for="fechaEnvio">fecha de envio*:</label>
+				<input name="fechaEnvio"  id="fechaEnvio" placeholder="fecha de envio" class="required" /><br />
+			      
+			    <div>
+			        <div>        
+					<label for="idProducto">id del producto*:</label>
+					<input name="idProducto"  id="idProducto"  placeholder="id del producto" class="required" /><br />
+				    
+					<label for="cantidad">cantidad</label>
+					<input name="cantidad" id="cantidad" placeholder="cantidad" /><br />
+					
+					
+					<div>  
+					<label for="idProducto">id del producto*:</label>
+					<input name="idProducto" id="idProducto" placeholder="id del producto" class="required" /><br />
+				    
+					<label for="cantidad">cantidad</label>
+					<input name="cantidad" id="cantidad" placeholder="cantidad" /><br />
+					</div>
+				</div>
+			                            
+				<div id="aster" > * | Campos obligatorios</div>
+			                            
+				<input class="botonAcceder" type="button" id="botonAcceder" value="Enviar" />
+			</form> 
+    	</div>
+    	
+    	<span id="mensaje" ></span>
+	</div>
+	
+	
+	
+	<script type="text/javascript">
+
+
+		const url = "http://localhost:9090/";
+		let detalletemp = [];
+		$(document).ready( function() {   // Esta parte del código se ejecutará automáticamente cuando la página esté lista.
+		    $("#botonAcceder").click( function() {     // Con esto establecemos la acción por defecto de nuestro botón de enviar.
+		    	
+
+		    	let idProductos = document.querySelectorAll("#idProducto");
+		    	let cantidades = document.querySelectorAll("#cantidad");
+		    	
+		    	
+		    	idProductos.forEach(function (detalle, index){
+		    		var objDetalle ={
+		    				idProducto : detalle.value,
+		    				cantidad : cantidades[index].value
+		    		}
+		    		detalletemp.push(objDetalle);
+		    	});
+		    	
+		    	
+
+		    	var orden = {
+		    			idCliente:$("#idCliente").val(),
+		    			fechaEnvio:$("#fechaEnvio").val(),
+		    			detalle:detalletemp
+		    			
+		    	};
+		    	
+		    	
+		    	// using the Fetch API
+// 		    	fetch(
+//     				url + "orden/orden",
+//     						{
+// 				    	 		 method: "POST"
+// 				    			,body: JSON.stringify(orden)
+// 				    			,headers: {
+// 				    				 "contentType": "application/json"
+// 				    					}
+//     						}
+//     				)
+// 		    	.then(function (response) {
+// 		    		$( "#<span id='mensaje' ></span>" ).html( "<strong>Se registro</strong> degrees" );
+// 		    		return response.json();		    	    
+// 		    	});
+		    	
+		    	
+	            $.ajax({
+	            	  url: url + "orden/orden",
+	            	  type:"POST",
+	            	  data:JSON.stringify(orden),
+	            	  dataType: 'json',
+	            	  contentType: "application/json",
+	            	  success: function( result ) {
+	            	    
+	            	  }
+	            	});
+		        
+		    });   
+		
+		
+		});	
+		
+		
+	
+</script>
+</body>
+</html>

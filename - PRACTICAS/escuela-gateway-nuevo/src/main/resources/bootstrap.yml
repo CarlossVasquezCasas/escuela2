@@ -1,0 +1,8 @@
+spring: 
+  application: 
+    name: escuela-gateway-nuevo
+  cloud: 
+    config: 
+      uri: http://localhost:8800
+#      uri: http://localhost:8081
+ 
