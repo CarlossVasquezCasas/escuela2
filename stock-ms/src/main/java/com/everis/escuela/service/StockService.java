@@ -13,5 +13,7 @@ public interface StockService {
 	public int obtenerProductosPorTienda(Long idproducto, Long iptienda) throws ResourceNotFoundException, ValidationException;
 	
 	
-	public void actualizarStockProducto(List<StockProductoDTO> lststockproducto) throws ValidationException; 
+	public void actualizarStockProducto(List<StockProductoDTO> lststockproducto) throws ValidationException;
+
+	void actualizarStockProductoEliminados(List<StockProductoDTO> lststockproducto) throws ValidationException; 
 }

@@ -19,9 +19,11 @@ import org.springframework.cloud.client.discovery.DiscoveryClient;
 import org.springframework.cloud.context.config.annotation.RefreshScope;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
@@ -29,6 +31,7 @@ import org.springframework.web.client.RestTemplate;
 
 import com.everis.escuela.dto.CantidadDTO;
 import com.everis.escuela.dto.DetalleOrdenReducidoDTO;
+import com.everis.escuela.dto.FechaEnvioDTO;
 import com.everis.escuela.dto.OrdenDTO;
 import com.everis.escuela.dto.OrdenReducidoDTO;
 import com.everis.escuela.dto.ProductoDTO;
@@ -270,7 +273,38 @@ public class OrdenController {
 	
 	
 
+	@GetMapping("/orden/detalle/{idProducto}")
+	public List<OrdenDTO> listarOrdenesPorProducto(@PathVariable("idProducto") Long idProducto  )  throws  Exception{
+		
+		  
+		ModelMapper mapper = new ModelMapper();
+
+		return StreamSupport.stream(ordenService.listarOrdenesPorProducto(idProducto).spliterator(), false).map(p ->mapper.map(p, OrdenDTO.class) )
+					.collect(Collectors.toList());
+		
+	}
 	
+	
+	@DeleteMapping("/orden/{idOrden}")
+	public void eliminarOrden(@PathVariable("idOrden") Long idOrden  )  throws  Exception{		
+		  
+		
+
+		ordenService.eliminarOrden(idOrden);
+		
+	}
+	
+	
+	@PutMapping("/orden/{idOrden}")
+	public OrdenDTO listarOrdenes(@PathVariable("{idOrden}") Long idOrden, @RequestBody FechaEnvioDTO fechaEnvio  )  throws  Exception{
+		
+		//Date fechaEnvioActualizar=new SimpleDateFormat("yyyy-MM-dd").parse(fechaEnvio);  
+		ModelMapper mapper = new ModelMapper();
+
+		return  mapper.map(ordenService.actualizarOrden(idOrden,fechaEnvio.getFechaEnvio()), OrdenDTO.class) ;
+				
+		
+	}
 	
 	
 

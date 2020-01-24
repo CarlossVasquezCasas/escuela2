@@ -14,42 +14,38 @@ import com.everis.escuela.exceptions.ResourceNotFoundException;
 import com.everis.escuela.exceptions.ValidationException;
 import com.everis.escuela.repository.StockRepository;
 import com.everis.escuela.service.StockService;
-@
-Transactional(readOnly = true)
+
+@Transactional(readOnly = true)
 @Service
 public class StockServiceImp implements StockService {
-	
-	
-	
-	
+
 	@Autowired
 	private StockRepository stockRepository;
 
 	@Override
 	public int obtenerCantidadProductoTodasTiendas(Long idproducto) throws ResourceNotFoundException {
 		int cantidad = 0;
-		
-		List<Stock> listastock = StreamSupport.stream(stockRepository.findAll().spliterator(), false).collect(Collectors.toList());
-		
-		
-		
-		if( listastock.size() == 0)
-		{
+
+		List<Stock> listastock = StreamSupport.stream(stockRepository.findAll().spliterator(), false)
+				.collect(Collectors.toList());
+
+		if (listastock.size() == 0) {
 			return 0;
 		}
 		for (Stock obj : listastock) {
-					if (obj.getIdProducto().equals(idproducto)  ) {
-						
-						cantidad= cantidad + obj.getCantidad() ;
-					}
-				
+			if (obj.getIdProducto().equals(idproducto)) {
+
+				cantidad = cantidad + obj.getCantidad();
 			}
-		
-		return cantidad; 
+
+		}
+
+		return cantidad;
 	}
 
 	@Override
-	public int obtenerProductosPorTienda(Long idproducto, Long idtienda) throws ResourceNotFoundException, ValidationException {
+	public int obtenerProductosPorTienda(Long idproducto, Long idtienda)
+			throws ResourceNotFoundException, ValidationException {
 //		int cantidad = 0;
 //		List<Stock> listastock = StreamSupport.stream(stockRepository.findAll().spliterator(), false).collect(Collectors.toList());
 //		
@@ -73,71 +69,85 @@ public class StockServiceImp implements StockService {
 //		for (Stock obj : listastock2) {
 //			cantidad2= cantidad2 + obj.getCantidad() ; 
 //		}
-		
-		
-		return stockRepository.findProductosPorTienda(idproducto, idtienda).orElseThrow(() -> new ValidationException("Error")); 
+
+		return stockRepository.findProductosPorTienda(idproducto, idtienda)
+				.orElseThrow(() -> new ValidationException("Error"));
 	}
-	
+
 	@Transactional(readOnly = false)
 	@Override
 	public void actualizarStockProducto(List<StockProductoDTO> lststockproducto) throws ValidationException {
 
-		if( lststockproducto.size() == 0)
-		{
+		if (lststockproducto.size() == 0) {
 			throw new ValidationException("No se envio corretamente el listado de productos a actualizar stock");
 		}
-		
+
 		int resultado = 0;
 		int valrestar = 0;
-		Integer numstock=0;
-		
+		Integer numstock = 0;
+
 		for (StockProductoDTO objdetalleorden : lststockproducto) {
-			numstock=0;
+			numstock = 0;
 			numstock = stockRepository.findCantidadProductos(objdetalleorden.getIdproducto());
-			if (numstock < objdetalleorden.getCantidad())
-			{
+			if (numstock < objdetalleorden.getCantidad()) {
 				throw new ValidationException("No se cuenta con stock del producto" + objdetalleorden.getIdproducto());
 			}
 		}
-		
+
 		for (StockProductoDTO objdetalleorden : lststockproducto) {
-			
-			
-			List<Stock> listastock = StreamSupport.stream(stockRepository.findByIdProductoOrderByCantidadDesc(objdetalleorden.getIdproducto()).spliterator(), false).collect(Collectors.toList());
-			valrestar = objdetalleorden.getCantidad() ;
+
+			List<Stock> listastock = StreamSupport.stream(
+					stockRepository.findByIdProductoOrderByCantidadDesc(objdetalleorden.getIdproducto()).spliterator(),
+					false).collect(Collectors.toList());
+			valrestar = objdetalleorden.getCantidad();
 			for (Stock stock : listastock) {
-				
-				resultado = stock.getCantidad() - valrestar ;
-				
-				if (resultado<=0) 
-				{	
-					valrestar = resultado*-1;
+
+				resultado = stock.getCantidad() - valrestar;
+
+				if (resultado <= 0) {
+					valrestar = resultado * -1;
 					stock.setCantidad(0);
-					
-				}else
-				{
+
+				} else {
 					stock.setCantidad(resultado);
 					valrestar = 0;
 				}
-				
-				
-				
-				if (resultado == 0 ) break; 						
-				
+
+				if (resultado == 0)
+					break;
+
 			}
 			stockRepository.saveAll(listastock);
-		
+
 		}
-		
-		
-		
-		
-		
-		
-		
-		
-		
+
 	}
-	
-	
+
+	@Transactional(readOnly = false)
+	@Override
+	public void actualizarStockProductoEliminados(List<StockProductoDTO> lststockproducto) throws ValidationException {
+
+		if (lststockproducto.size() == 0) {
+			throw new ValidationException("No se envio corretamente el listado de productos a actualizar stock");
+		}
+
+		int resultado = 0;
+		int valrsumar = 0;	
+
+		for (StockProductoDTO objdetalleorden : lststockproducto) {
+
+			Stock stock = StreamSupport.stream(
+					stockRepository.findByIdProductoOrderByCantidadDesc(objdetalleorden.getIdproducto()).spliterator(),
+					false).collect(Collectors.toList()).get(0);
+			valrsumar = objdetalleorden.getCantidad();
+
+			resultado = stock.getCantidad() + valrsumar;
+			stock.setCantidad(resultado);
+
+			stockRepository.save(stock);
+
+		}
+
+	}
+
 }

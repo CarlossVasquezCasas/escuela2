@@ -63,6 +63,7 @@
 		    	
 		    	
 		    	idProductos.forEach(function (detalle, index){
+		    		console.log("iteracion : " + index);
 		    		var objDetalle ={
 		    				idProducto : detalle.value,
 		    				cantidad : cantidades[index].value
@@ -73,13 +74,13 @@
 		    	
 
 		    	var orden = {
-		    			idCliente:$("#idCliente").val(),
-		    			fechaEnvio:$("#fechaEnvio").val(),
-		    			detalle:detalletemp
+		    			idCliente: $("#idCliente").val(),
+		    			fechaEnvio: $("#fechaEnvio").val(),
+		    			detalle: detalletemp
 		    			
 		    	};
 		    	
-		    	
+		    	console.log("orden : " + JSON.stringify(orden) );
 		    	// using the Fetch API
 // 		    	fetch(
 //     				url + "orden/orden",
@@ -104,7 +105,7 @@
 	            	  dataType: 'json',
 	            	  contentType: "application/json",
 	            	  success: function( result ) {
-	            		  result.json();
+	            		   console.log(JSON.stringify(result) );
 	            	  }
 	            	});
 		        

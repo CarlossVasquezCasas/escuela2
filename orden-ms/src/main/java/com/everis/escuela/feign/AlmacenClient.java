@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import com.everis.escuela.dto.CantidadDTO;
 import com.everis.escuela.dto.StockProductoDTO;
 import com.everis.escuela.exceptions.ResourceNotFoundException;
+import com.everis.escuela.exceptions.ValidationException;
 
 @FeignClient("almacen-ms")
 public interface AlmacenClient {
@@ -20,4 +21,8 @@ public interface AlmacenClient {
 	
 	@PostMapping("/stock/")
 	public void /*String*/ actualizarStockProducto(@RequestBody List<StockProductoDTO> stockproducto) ;
+	
+	@PostMapping("/stock/eliminados")
+	public void /*String*/ actualizarStockOrdenEliminada(@RequestBody List<StockProductoDTO> lststockproducto) throws ValidationException ;
+	
 }

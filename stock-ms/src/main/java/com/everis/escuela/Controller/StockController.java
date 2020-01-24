@@ -23,8 +23,7 @@ import com.everis.escuela.service.StockService;
 @RestController
 public class StockController {
 	
-	@Value("${tipcambio}")
-	private String tipcambio;
+	
 	
 	
 	@Autowired
@@ -53,12 +52,14 @@ public class StockController {
 	}
 	
 	
-	
-	@GetMapping("/tipcambio")
-	public String getTipCambio() {
+	@PostMapping("/stock/eliminados")
+	public void /*String*/ actualizarStockOrdenEliminada(@RequestBody List<StockProductoDTO> lststockproducto) throws ValidationException {
 		
-		return "El tipo de cambio de hoy es : " + tipcambio;
+		stockService.actualizarStockProductoEliminados(lststockproducto);
 	}
+	
+	
+	
 	
 
 }
