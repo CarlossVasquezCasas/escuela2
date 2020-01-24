@@ -296,7 +296,7 @@ public class OrdenController {
 	
 	
 	@PutMapping("/orden/{idOrden}")
-	public OrdenDTO listarOrdenes(@PathVariable("{idOrden}") Long idOrden, @RequestBody FechaEnvioDTO fechaEnvio  )  throws  Exception{
+	public OrdenDTO listarOrdenes(@PathVariable("idOrden") Long idOrden, @RequestBody FechaEnvioDTO fechaEnvio  )  throws  Exception{
 		
 		//Date fechaEnvioActualizar=new SimpleDateFormat("yyyy-MM-dd").parse(fechaEnvio);  
 		ModelMapper mapper = new ModelMapper();
