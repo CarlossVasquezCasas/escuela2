@@ -1,11 +1,0 @@
-server:
-  port: 9901 #9090
-zuul:
-  ignored-headers: Access-Control-Allow-Credentials, Access-Control-Allow-Origin  routes:    
-    empleado:
-      path: /empleado/**
-      service-id: empleado-ms
-    empresa:
-      path: /empresa/**
-      service-id: empresa-ms       
-    
