@@ -3,7 +3,7 @@ spring:
     name: almacen-ms
   cloud: 
     config: 
-      uri: http://user:1ade7f6c-9ccb-4e23-adf4-6d1a0341e4da@localhost:8081/
+      uri: http://user:6292eb5a-dd68-4e76-803e-b1aedffcde31@localhost:8081/
   
 server: 
   port: ${PORT:${SERVER_PORT:0}}
